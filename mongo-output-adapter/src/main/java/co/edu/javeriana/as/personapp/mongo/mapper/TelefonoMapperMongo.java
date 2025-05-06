@@ -3,6 +3,7 @@ package co.edu.javeriana.as.personapp.mongo.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import co.edu.javeriana.as.personapp.common.annotations.Mapper;
+import co.edu.javeriana.as.personapp.domain.Gender;
 import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.domain.Phone;
 import co.edu.javeriana.as.personapp.mongo.document.PersonaDocument;
@@ -36,6 +37,16 @@ public class TelefonoMapperMongo {
 	}
 
 	private @NonNull Person validateOwner(PersonaDocument duenio) {
-		return duenio != null ? personaMapperMongo.fromAdapterToDomain(duenio) : new Person();
+		Person owner = new Person();
+		owner.setIdentification(duenio.getId());
+		owner.setFirstName(duenio.getNombre());
+		owner.setLastName(duenio.getApellido());
+		if ("M".equals(duenio.getGenero())) {
+			owner.setGender(Gender.MALE);
+		} else {
+			owner.setGender(Gender.FEMALE);
+		}
+		owner.setAge(duenio.getEdad());
+		return owner;
 	}
 }

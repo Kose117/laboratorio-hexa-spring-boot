@@ -12,36 +12,51 @@ import co.edu.javeriana.as.personapp.common.annotations.Adapter;
 import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.mongo.document.PersonaDocument;
 import co.edu.javeriana.as.personapp.mongo.mapper.PersonaMapperMongo;
+import co.edu.javeriana.as.personapp.mongo.repository.EstudiosRepositoryMongo;
 import co.edu.javeriana.as.personapp.mongo.repository.PersonaRepositoryMongo;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Adapter("personOutputAdapterMongo")
 public class PersonOutputAdapterMongo implements PersonOutputPort {
-	
 	@Autowired
-    private PersonaRepositoryMongo personaRepositoryMongo;
-	
+	private EstudiosRepositoryMongo studyRepositoryMongo;
+
+	@Autowired
+	private PersonaRepositoryMongo personaRepositoryMongo;
+
 	@Autowired
 	private PersonaMapperMongo personaMapperMongo;
-	
+
 	@Override
 	public Person save(Person person) {
 		log.debug("Into save on Adapter MongoDB");
 		try {
-			PersonaDocument persistedPersona = personaRepositoryMongo.save(personaMapperMongo.fromDomainToAdapter(person));
+			PersonaDocument persistedPersona = personaRepositoryMongo
+					.save(personaMapperMongo.fromDomainToAdapter(person));
 			return personaMapperMongo.fromAdapterToDomain(persistedPersona);
 		} catch (MongoWriteException e) {
 			log.warn(e.getMessage());
 			return person;
-		}		
+		}
 	}
 
 	@Override
-	public Boolean delete(Integer identification) {
+	public Boolean delete(Integer personId) {
 		log.debug("Into delete on Adapter MongoDB");
-		personaRepositoryMongo.deleteById(identification);
-		return personaRepositoryMongo.findById(identification).isEmpty();
+		if (personaRepositoryMongo.existsById(personId)) {
+			PersonaDocument persona = personaRepositoryMongo.findById(personId).orElse(null);
+
+			if (persona != null) {
+				studyRepositoryMongo.deleteByPrimaryPersona(persona);
+			}
+			personaRepositoryMongo.deleteById(personId);
+
+			return !personaRepositoryMongo.existsById(personId);
+		} else {
+			log.warn("No person found with ID: " + personId);
+			return false;
+		}
 	}
 
 	@Override
