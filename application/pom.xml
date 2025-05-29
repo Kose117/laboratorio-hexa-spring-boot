@@ -6,11 +6,11 @@
 		<groupId>co.edu.javeriana.as</groupId>
 		<artifactId>personapp-hexa-spring-boot</artifactId>
 		<version>${revision}</version>
-  	</parent>
+	</parent>
 	<groupId>co.edu.javeriana.as.personapp</groupId>
 	<artifactId>application</artifactId>
-  	<name>PersonAPP Application</name>
-  	<description>Application (Business Rules) for PersonAPP</description>
+	<name>PersonAPP Application</name>
+	<description>Application (Business Rules) for PersonAPP</description>
 	<dependencies>
 		<dependency>
 			<groupId>co.edu.javeriana.as.personapp</groupId>

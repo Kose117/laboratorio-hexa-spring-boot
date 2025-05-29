@@ -19,11 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Adapter("personOutputAdapterMongo")
 public class PersonOutputAdapterMongo implements PersonOutputPort {
-	@Autowired
-	private EstudiosRepositoryMongo studyRepositoryMongo;
 
 	@Autowired
 	private PersonaRepositoryMongo personaRepositoryMongo;
+
+	@Autowired
+	private EstudiosRepositoryMongo studyRepositoryMongo;
 
 	@Autowired
 	private PersonaMapperMongo personaMapperMongo;
@@ -44,18 +45,25 @@ public class PersonOutputAdapterMongo implements PersonOutputPort {
 	@Override
 	public Boolean delete(Integer personId) {
 		log.debug("Into delete on Adapter MongoDB");
+
+		// Verifica si la persona existe
 		if (personaRepositoryMongo.existsById(personId)) {
+			// Encuentra la persona usando su ID
 			PersonaDocument persona = personaRepositoryMongo.findById(personId).orElse(null);
 
+			// Elimina todos los estudios asociados a la persona
 			if (persona != null) {
 				studyRepositoryMongo.deleteByPrimaryPersona(persona);
 			}
+
+			// Elimina la persona
 			personaRepositoryMongo.deleteById(personId);
 
+			// Verifica si la persona fue eliminada correctamente
 			return !personaRepositoryMongo.existsById(personId);
 		} else {
 			log.warn("No person found with ID: " + personId);
-			return false;
+			return false; // Retorna falso si no se encontró la persona
 		}
 	}
 

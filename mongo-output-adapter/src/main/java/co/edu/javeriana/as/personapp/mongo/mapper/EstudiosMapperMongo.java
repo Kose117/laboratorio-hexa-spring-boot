@@ -55,11 +55,11 @@ public class EstudiosMapperMongo {
 
 	public Study fromAdapterToDomain(EstudiosDocument estudiosDocument) {
 		Study study = new Study();
-		study.setPerson(personaMapperMongo.fromAdapterToDomain(estudiosDocument.getPrimaryPersona()));
-		study.setProfession(profesionMapperMongo.fromAdapterToDomain(estudiosDocument.getPrimaryProfesion()));
+		study.setPerson(validateOwner(estudiosDocument.getPrimaryPersona()));
+		study.setProfession(validateProfession(estudiosDocument.getPrimaryProfesion()));
 		study.setGraduationDate(validateGraduationDate(estudiosDocument.getFecha()));
 		study.setUniversityName(validateUniversityName(estudiosDocument.getUniver()));
-		return null;
+		return study;
 	}
 
 	private LocalDate validateGraduationDate(LocalDate fecha) {
@@ -72,9 +72,11 @@ public class EstudiosMapperMongo {
 
 	private @NonNull Person validateOwner(PersonaDocument duenio) {
 		Person owner = new Person();
+		// log.info("null owner MONGO: "+duenio);
 		owner.setIdentification(duenio.getId());
 		owner.setFirstName(duenio.getNombre());
 		owner.setLastName(duenio.getApellido());
+		// si es genero MALE PONER gender.MALE
 		if ("M".equals(duenio.getGenero())) {
 			owner.setGender(Gender.MALE);
 		} else {

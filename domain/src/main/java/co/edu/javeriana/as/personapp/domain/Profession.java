@@ -20,5 +20,6 @@ public class Profession {
 	private String name;
 	private String description;
 	@ToString.Exclude
+	// @JsonIgnore
 	private List<Study> studies;
 }

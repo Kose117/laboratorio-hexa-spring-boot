@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TelefonoModelCli {
 
-    private String numero;
-    private String compania;
-    private String idPersona;
+    private String number;
+    private String company;
+    private String idPerson;
     
 }

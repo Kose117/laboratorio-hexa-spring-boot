@@ -16,7 +16,11 @@ Deben configurar el lombok en sus IDEs
 Pueden hacer Fork a este repo, no editar este repositorio
 
 # REVISADO
-Domain
-Common
 Aplication
+cli input
+Common
+Domain
+maria output
+
+
 mongo output adapter

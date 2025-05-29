@@ -9,7 +9,9 @@ import co.edu.javeriana.as.personapp.domain.Phone;
 import co.edu.javeriana.as.personapp.mongo.document.PersonaDocument;
 import co.edu.javeriana.as.personapp.mongo.document.TelefonoDocument;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Mapper
 public class TelefonoMapperMongo {
 
@@ -21,10 +23,12 @@ public class TelefonoMapperMongo {
 		telefonoDocument.setId(phone.getNumber());
 		telefonoDocument.setOper(phone.getCompany());
 		telefonoDocument.setPrimaryDuenio(validateDuenio(phone.getOwner()));
+		log.warn("Mapping from domain to adapter" + telefonoDocument);
 		return telefonoDocument;
 	}
 
 	private PersonaDocument validateDuenio(@NonNull Person owner) {
+		log.info("null owner: " + owner);
 		return owner != null ? personaMapperMongo.fromDomainToAdapter(owner) : new PersonaDocument();
 	}
 
@@ -33,14 +37,17 @@ public class TelefonoMapperMongo {
 		phone.setNumber(telefonoDocument.getId());
 		phone.setCompany(telefonoDocument.getOper());
 		phone.setOwner(validateOwner(telefonoDocument.getPrimaryDuenio()));
+		log.warn("Mapping from adapter to domain" + phone);
 		return phone;
 	}
 
 	private @NonNull Person validateOwner(PersonaDocument duenio) {
 		Person owner = new Person();
+		log.info("null owner MONGO: " + duenio);
 		owner.setIdentification(duenio.getId());
 		owner.setFirstName(duenio.getNombre());
 		owner.setLastName(duenio.getApellido());
+		// si es genero MALE PONER gender.MALE
 		if ("M".equals(duenio.getGenero())) {
 			owner.setGender(Gender.MALE);
 		} else {

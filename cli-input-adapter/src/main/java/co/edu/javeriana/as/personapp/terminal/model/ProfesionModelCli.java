@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class ProfesionModelCli {
 
     private Integer id;
-    private String nombre;
-    private String descripcion;
+    private String name;
+    private String description;
     
 }

@@ -1,4 +1,5 @@
 package co.edu.javeriana.as.personapp.application.usecase;
+
 import co.edu.javeriana.as.personapp.application.port.in.ProfessionInputPort;
 import co.edu.javeriana.as.personapp.application.port.out.ProfessionOutputPort;
 import co.edu.javeriana.as.personapp.common.annotations.UseCase;

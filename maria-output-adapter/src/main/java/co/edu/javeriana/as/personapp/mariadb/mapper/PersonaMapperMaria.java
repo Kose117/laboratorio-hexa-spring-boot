@@ -15,7 +15,9 @@ import co.edu.javeriana.as.personapp.mariadb.entity.EstudiosEntity;
 import co.edu.javeriana.as.personapp.mariadb.entity.PersonaEntity;
 import co.edu.javeriana.as.personapp.mariadb.entity.TelefonoEntity;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Mapper
 public class PersonaMapperMaria {
 
@@ -27,6 +29,9 @@ public class PersonaMapperMaria {
 
 	public PersonaEntity fromDomainToAdapter(Person person) {
 		PersonaEntity personaEntity = new PersonaEntity();
+
+		log.warn("Mapping from domain to adapter" + person);
+
 		personaEntity.setCc(person.getIdentification());
 		personaEntity.setNombre(person.getFirstName());
 		personaEntity.setApellido(person.getLastName());
@@ -47,7 +52,8 @@ public class PersonaMapperMaria {
 
 	private List<EstudiosEntity> validateEstudios(List<Study> studies) {
 		return studies != null && !studies.isEmpty()
-				? studies.stream().map(study -> estudiosMapperMaria.fromDomainToAdapter(study)).collect(Collectors.toList())
+				? studies.stream().map(study -> estudiosMapperMaria.fromDomainToAdapter(study))
+						.collect(Collectors.toList())
 				: new ArrayList<EstudiosEntity>();
 	}
 
@@ -59,6 +65,9 @@ public class PersonaMapperMaria {
 
 	public Person fromAdapterToDomain(PersonaEntity personaEntity) {
 		Person person = new Person();
+
+		log.warn("Mapping from adapter to domain" + personaEntity);
+
 		person.setIdentification(personaEntity.getCc());
 		person.setFirstName(personaEntity.getNombre());
 		person.setLastName(personaEntity.getApellido());
@@ -78,6 +87,7 @@ public class PersonaMapperMaria {
 	}
 
 	private List<Study> validateStudies(List<EstudiosEntity> estudiosEntity) {
+		log.warn("Mapping validateStudies: {}", estudiosEntity);
 		return estudiosEntity != null && !estudiosEntity.isEmpty() ? estudiosEntity.stream()
 				.map(estudio -> estudiosMapperMaria.fromAdapterToDomain(estudio)).collect(Collectors.toList())
 				: new ArrayList<Study>();

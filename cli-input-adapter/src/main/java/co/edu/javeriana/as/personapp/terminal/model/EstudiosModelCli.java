@@ -11,9 +11,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class EstudiosModelCli {
 
-    private LocalDate fechaGraduacion;
-    private String nombreUniversidad;
-    private String idPersona;
-    private String idProfesion;
+    private LocalDate graduationDate;
+    private String universityName;
+    private String idPerson;
+    private String idProfession;
     
 }

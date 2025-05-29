@@ -11,7 +11,9 @@ import co.edu.javeriana.as.personapp.domain.Profession;
 import co.edu.javeriana.as.personapp.domain.Study;
 import co.edu.javeriana.as.personapp.mariadb.entity.EstudiosEntity;
 import co.edu.javeriana.as.personapp.mariadb.entity.ProfesionEntity;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Mapper
 public class ProfesionMapperMaria {
 
@@ -51,6 +53,7 @@ public class ProfesionMapperMaria {
 	}
 
 	private List<Study> validateStudies(List<EstudiosEntity> estudiosEntity) {
+		log.warn("validateStudies" + estudiosEntity);
 		return estudiosEntity != null && !estudiosEntity.isEmpty() ? estudiosEntity.stream()
 				.map(estudio -> estudiosMapperMaria.fromAdapterToDomain(estudio)).collect(Collectors.toList())
 				: new ArrayList<Study>();

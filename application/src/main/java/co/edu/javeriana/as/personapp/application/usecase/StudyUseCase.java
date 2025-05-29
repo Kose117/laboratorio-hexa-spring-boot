@@ -18,8 +18,7 @@ public class StudyUseCase implements StudyInputPort {
 
     private StudyOutputPort studyPersistence;
 
-    public StudyUseCase(@Qualifier("studyOutputAdapterMaria") StudyOutputPort studyPersistence)
-    {
+    public StudyUseCase(@Qualifier("studyOutputAdapterMaria") StudyOutputPort studyPersistence) {
         this.studyPersistence = studyPersistence;
     }
 
@@ -37,39 +36,41 @@ public class StudyUseCase implements StudyInputPort {
     @Override
     public Study edit(Integer professionID, Integer personID, Study study) throws NoExistException {
         Study oldStudy = studyPersistence.findById(professionID, personID);
-        if(oldStudy != null)
+        if (oldStudy != null)
             return studyPersistence.save(study);
 
-        throw new NoExistException("The study with professionID " + professionID+" and personID "+personID+" does not exist into db, cannot be edited");
-
+        throw new NoExistException("The study with professionID " + professionID + " and personID " + personID
+                + " does not exist into db, cannot be edited");
 
     }
 
     @Override
     public Boolean drop(Integer professionID, Integer personID) throws NoExistException {
         Study oldStudy = studyPersistence.findById(professionID, personID);
-        if(oldStudy!=null)
+        if (oldStudy != null)
             return studyPersistence.delete(professionID, personID);
 
-        throw new NoExistException("The study with professionID " + professionID+" and personID "+personID+" does not exist into db, cannot be dropped");
+        throw new NoExistException("The study with professionID " + professionID + " and personID " + personID
+                + " does not exist into db, cannot be dropped");
     }
 
     @Override
     public List<Study> findAll() {
-        log.info("Output; "+studyPersistence.getClass());
+        log.info("Output; " + studyPersistence.getClass());
         return studyPersistence.find();
     }
 
     @Override
     public Study findOne(Integer professionID, Integer personID) throws NoExistException {
-        log.debug("Into Study findOne on Application Domain"+ professionID+" "+personID);
-        
+        log.debug("Into Study findOne on Application Domain" + professionID + " " + personID);
+
         Study oldStudy = studyPersistence.findById(professionID, personID);
-        
-        if(oldStudy!=null)
+
+        if (oldStudy != null)
             return oldStudy;
 
-        throw new NoExistException("The study with professionID " + professionID+" and personID "+personID+" does not exist into db, cannot be found");
+        throw new NoExistException("The study with professionID " + professionID + " and personID " + personID
+                + " does not exist into db, cannot be found");
     }
 
     @Override
@@ -80,19 +81,21 @@ public class StudyUseCase implements StudyInputPort {
     @Override
     public Person getPerson(Integer professionID, Integer personID) throws NoExistException {
         Study oldStudy = studyPersistence.findById(professionID, personID);
-        if(oldStudy!=null)
+        if (oldStudy != null)
             return oldStudy.getPerson();
 
-        throw new NoExistException("The study with professionID " + professionID+" and personID "+personID+" does not exist into db, cannot be found");
+        throw new NoExistException("The study with professionID " + professionID + " and personID " + personID
+                + " does not exist into db, cannot be found");
     }
 
     @Override
     public Profession getProfession(Integer professionID, Integer personID) throws NoExistException {
         Study oldStudy = studyPersistence.findById(professionID, personID);
-        if(oldStudy!=null)
+        if (oldStudy != null)
             return oldStudy.getProfession();
 
-        throw new NoExistException("The study with professionID " + professionID+" and personID "+personID+" does not exist into db, cannot be found");
+        throw new NoExistException("The study with professionID " + professionID + " and personID " + personID
+                + " does not exist into db, cannot be found");
     }
-    
+
 }

@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonaModelCli {
+
 	private Integer cc;
 	private String nombre;
 	private String apellido;
 	private String genero;
 	private Integer edad;
+	
 }

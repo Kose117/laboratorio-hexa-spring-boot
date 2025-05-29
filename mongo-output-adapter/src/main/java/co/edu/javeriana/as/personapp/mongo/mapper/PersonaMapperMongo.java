@@ -15,7 +15,9 @@ import co.edu.javeriana.as.personapp.mongo.document.EstudiosDocument;
 import co.edu.javeriana.as.personapp.mongo.document.PersonaDocument;
 import co.edu.javeriana.as.personapp.mongo.document.TelefonoDocument;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Mapper
 public class PersonaMapperMongo {
 
@@ -27,6 +29,7 @@ public class PersonaMapperMongo {
 
 	public PersonaDocument fromDomainToAdapter(Person person) {
 		PersonaDocument personaDocument = new PersonaDocument();
+		log.warn("Mapping from domain to adapter" + person);
 		personaDocument.setId(person.getIdentification());
 		personaDocument.setNombre(person.getFirstName());
 		personaDocument.setApellido(person.getLastName());
