@@ -30,8 +30,8 @@ public class PersonaMapperMaria {
 	public PersonaEntity fromDomainToAdapter(Person person) {
 		PersonaEntity personaEntity = new PersonaEntity();
 
-		log.warn("Mapping from domain to adapter" + person);
-
+		log.warn("Mapping from domain to adapter"+ person);
+		
 		personaEntity.setCc(person.getIdentification());
 		personaEntity.setNombre(person.getFirstName());
 		personaEntity.setApellido(person.getLastName());
@@ -52,8 +52,7 @@ public class PersonaMapperMaria {
 
 	private List<EstudiosEntity> validateEstudios(List<Study> studies) {
 		return studies != null && !studies.isEmpty()
-				? studies.stream().map(study -> estudiosMapperMaria.fromDomainToAdapter(study))
-						.collect(Collectors.toList())
+				? studies.stream().map(study -> estudiosMapperMaria.fromDomainToAdapter(study)).collect(Collectors.toList())
 				: new ArrayList<EstudiosEntity>();
 	}
 
@@ -66,7 +65,7 @@ public class PersonaMapperMaria {
 	public Person fromAdapterToDomain(PersonaEntity personaEntity) {
 		Person person = new Person();
 
-		log.warn("Mapping from adapter to domain" + personaEntity);
+		log.warn("Mapping from adapter to domain"+ personaEntity);
 
 		person.setIdentification(personaEntity.getCc());
 		person.setFirstName(personaEntity.getNombre());

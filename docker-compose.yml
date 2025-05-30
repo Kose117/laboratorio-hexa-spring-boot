@@ -25,17 +25,24 @@ services:
     networks:
       - my_network
 
-  rest-api:  # Aquí se define el servicio REST
+  rest-api:
+    # Aquí se define el servicio REST
     container_name: rest-container
     build:
-      context: .  # Usamos el contexto de la raíz del proyecto
-      dockerfile: Dockerfile  # Asegúrate de que tu Dockerfile esté en la raíz
+      context: . # Usamos el contexto de la raíz del proyecto
+      dockerfile: Dockerfile # Asegúrate de que tu Dockerfile esté en la raíz
     ports:
-      - "3000:3000"  # Mapea el puerto de tu aplicación al puerto 3000
+      - "3000:3000" # Mapea el puerto de tu aplicación al puerto 3000
     networks:
       - my_network
     depends_on:
-      - mariadb  # Asegúrate de que MariaDB esté disponible antes de iniciar el REST
+      - mariadb # Asegúrate de que MariaDB esté disponible antes de iniciar el REST
+
+volumes:
+  mariadb-data:
+  mongo-data:
+  db-init:
+
 
 networks:
   my_network:

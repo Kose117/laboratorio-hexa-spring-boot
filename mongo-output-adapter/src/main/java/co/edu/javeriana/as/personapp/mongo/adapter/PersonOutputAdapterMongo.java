@@ -19,53 +19,53 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Adapter("personOutputAdapterMongo")
 public class PersonOutputAdapterMongo implements PersonOutputPort {
-
+	
 	@Autowired
-	private PersonaRepositoryMongo personaRepositoryMongo;
-
+    private PersonaRepositoryMongo personaRepositoryMongo;
+	
 	@Autowired
-	private EstudiosRepositoryMongo studyRepositoryMongo;
-
+    private EstudiosRepositoryMongo studyRepositoryMongo;
+	
 	@Autowired
 	private PersonaMapperMongo personaMapperMongo;
-
+	
 	@Override
 	public Person save(Person person) {
 		log.debug("Into save on Adapter MongoDB");
 		try {
-			PersonaDocument persistedPersona = personaRepositoryMongo
-					.save(personaMapperMongo.fromDomainToAdapter(person));
+			PersonaDocument persistedPersona = personaRepositoryMongo.save(personaMapperMongo.fromDomainToAdapter(person));
 			return personaMapperMongo.fromAdapterToDomain(persistedPersona);
 		} catch (MongoWriteException e) {
 			log.warn(e.getMessage());
 			return person;
-		}
+		}		
 	}
 
 	@Override
-	public Boolean delete(Integer personId) {
-		log.debug("Into delete on Adapter MongoDB");
+public Boolean delete(Integer personId) {
+    log.debug("Into delete on Adapter MongoDB");
 
-		// Verifica si la persona existe
-		if (personaRepositoryMongo.existsById(personId)) {
-			// Encuentra la persona usando su ID
-			PersonaDocument persona = personaRepositoryMongo.findById(personId).orElse(null);
+    // Verifica si la persona existe
+    if (personaRepositoryMongo.existsById(personId)) {
+        // Encuentra la persona usando su ID
+        PersonaDocument persona = personaRepositoryMongo.findById(personId).orElse(null);
 
-			// Elimina todos los estudios asociados a la persona
-			if (persona != null) {
-				studyRepositoryMongo.deleteByPrimaryPersona(persona);
-			}
+        // Elimina todos los estudios asociados a la persona
+        if (persona != null) {
+            studyRepositoryMongo.deleteByPrimaryPersona(persona);
+        }
 
-			// Elimina la persona
-			personaRepositoryMongo.deleteById(personId);
+        // Elimina la persona
+        personaRepositoryMongo.deleteById(personId);
 
-			// Verifica si la persona fue eliminada correctamente
-			return !personaRepositoryMongo.existsById(personId);
-		} else {
-			log.warn("No person found with ID: " + personId);
-			return false; // Retorna falso si no se encontró la persona
-		}
-	}
+        // Verifica si la persona fue eliminada correctamente
+        return !personaRepositoryMongo.existsById(personId);
+    } else {
+        log.warn("No person found with ID: " + personId);
+        return false; // Retorna falso si no se encontró la persona
+    }
+}
+
 
 	@Override
 	public List<Person> find() {

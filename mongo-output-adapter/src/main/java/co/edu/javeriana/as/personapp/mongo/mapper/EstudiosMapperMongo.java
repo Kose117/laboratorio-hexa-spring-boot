@@ -70,16 +70,17 @@ public class EstudiosMapperMongo {
 		return univer != null ? univer : "";
 	}
 
-	private @NonNull Person validateOwner(PersonaDocument duenio) {
+		private @NonNull Person validateOwner(PersonaDocument duenio) {
 		Person owner = new Person();
-		// log.info("null owner MONGO: "+duenio);
+		//log.info("null owner MONGO: "+duenio);
 		owner.setIdentification(duenio.getId());
 		owner.setFirstName(duenio.getNombre());
 		owner.setLastName(duenio.getApellido());
-		// si es genero MALE PONER gender.MALE
-		if ("M".equals(duenio.getGenero())) {
+		//si es genero MALE PONER gender.MALE
+		if("M".equals(duenio.getGenero())) {
 			owner.setGender(Gender.MALE);
-		} else {
+		}
+		else{
 			owner.setGender(Gender.FEMALE);
 		}
 		owner.setAge(duenio.getEdad());

@@ -19,7 +19,7 @@ public class TelefonoMapperMaria {
 	private PersonaMapperMaria personaMapperMaria;
 
 	public TelefonoEntity fromDomainToAdapter(Phone phone) {
-		log.warn("Mapping from domain to adapter" + phone);
+		log.warn("Mapping from domain to adapter"+ phone);
 
 		TelefonoEntity telefonoEntity = new TelefonoEntity();
 		telefonoEntity.setNum(phone.getNumber());
@@ -42,14 +42,15 @@ public class TelefonoMapperMaria {
 
 	private @NonNull Person validateOwner(PersonaEntity duenio) {
 		Person owner = new Person();
-		log.info("null owner: " + duenio);
+		log.info("null owner: "+duenio);
 		owner.setIdentification(duenio.getCc());
 		owner.setFirstName(duenio.getNombre());
 		owner.setLastName(duenio.getApellido());
-		// si es genero MALE PONER gender.MALE
-		if (duenio.getGenero() == 'M') {
+		//si es genero MALE PONER gender.MALE
+		if(duenio.getGenero() == 'M') {
 			owner.setGender(Gender.MALE);
-		} else {
+		}
+		else{
 			owner.setGender(Gender.FEMALE);
 		}
 		owner.setAge(duenio.getEdad());
