@@ -1,6 +1,6 @@
 // Connect to the MongoDB database
 // const db = connect("mongodb://localhost:27017/prueba_db");
-
+use persona_db;
 db.persona.insertMany([
 	{
 		"_id": NumberInt(123456789),

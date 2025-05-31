@@ -1,6 +1,5 @@
 package co.edu.javeriana.as.personapp.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +17,7 @@ import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.mapper.PersonaMapperRest;
 import co.edu.javeriana.as.personapp.model.request.PersonaRequest;
 import co.edu.javeriana.as.personapp.model.response.PersonaResponse;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -51,12 +51,18 @@ public class PersonaInputAdapterRest {
 
     public List<PersonaResponse> historial(String database) throws InvalidOptionException, NoExistException {
         log.info("Into historial PersonaEntity in Input Adapter");
-        setPersonOutputPortInjection(database);
+        String db = setPersonOutputPortInjection(database);
         List<PersonaResponse> personas = personInputPort.findAll()
             .stream()
-            .map(personaMapperRest::fromDomainToAdapterRestMaria)
+            .map(person -> {
+                if (db.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+                    return personaMapperRest.fromDomainToAdapterRestMaria(person);
+                } else {
+                    return personaMapperRest.fromDomainToAdapterRestMongo(person);
+                }
+            })
             .collect(Collectors.toList());
-        
+
         if (personas.isEmpty()) {
             throw new NoExistException("No personas found in database: " + database);
         }
@@ -65,20 +71,28 @@ public class PersonaInputAdapterRest {
 
     public PersonaResponse findOne(String database, String identification) throws InvalidOptionException, NoExistException {
         log.info("Into findOne PersonaEntity in Input Adapter");
-        setPersonOutputPortInjection(database);
+        String db = setPersonOutputPortInjection(database);
         Person person = personInputPort.findOne(Integer.parseInt(identification));
         if (person == null) {
             throw new NoExistException("Person not found with identification: " + identification);
         }
-        return personaMapperRest.fromDomainToAdapterRestMaria(person);
+        if (db.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+            return personaMapperRest.fromDomainToAdapterRestMaria(person);
+        } else {
+            return personaMapperRest.fromDomainToAdapterRestMongo(person);
+        }
     }
 
     public PersonaResponse crearPersona(PersonaRequest personaRequest) throws InvalidOptionException {
         log.info("Into crearPersona in Input Adapter");
-        setPersonOutputPortInjection(personaRequest.getDatabase());
+        String db = setPersonOutputPortInjection(personaRequest.getDatabase());
         Person person = personaMapperRest.fromAdapterToDomain(personaRequest);
         personInputPort.create(person);
-        return personaMapperRest.fromDomainToAdapterRestMaria(person);
+        if (db.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+            return personaMapperRest.fromDomainToAdapterRestMaria(person);
+        } else {
+            return personaMapperRest.fromDomainToAdapterRestMongo(person);
+        }
     }
 
     public PersonaResponse eliminarPersona(String database, String identification) throws InvalidOptionException, NoExistException {
@@ -93,11 +107,15 @@ public class PersonaInputAdapterRest {
 
     public PersonaResponse editarPersona(PersonaRequest personaRequest) throws InvalidOptionException, NoExistException {
         log.info("Into editarPersona in Input Adapter");
-        setPersonOutputPortInjection(personaRequest.getDatabase());
+        String db = setPersonOutputPortInjection(personaRequest.getDatabase());
         Person updatedPerson = personInputPort.edit(Integer.parseInt(personaRequest.getDni()), personaMapperRest.fromAdapterToDomain(personaRequest));
         if (updatedPerson == null) {
             throw new NoExistException("Person not found with DNI: " + personaRequest.getDni());
         }
-        return personaMapperRest.fromDomainToAdapterRestMaria(updatedPerson);
+        if (db.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+            return personaMapperRest.fromDomainToAdapterRestMaria(updatedPerson);
+        } else {
+            return personaMapperRest.fromDomainToAdapterRestMongo(updatedPerson);
+        }
     }
 }

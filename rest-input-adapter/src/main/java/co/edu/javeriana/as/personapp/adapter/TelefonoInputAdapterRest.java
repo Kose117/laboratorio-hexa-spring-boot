@@ -49,13 +49,14 @@ public class TelefonoInputAdapterRest {
     private PersonInputPort personInputPort;
     private PhoneInputPort phoneInputPort;
 
+    /** inyecta los puertos correctos y devuelve \"MARIA\" o \"MONGO\" */
     private String setPhoneOutputPortInjection(String dbOption) throws InvalidOptionException {
         if (dbOption.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
-            phoneInputPort = new PhoneUseCase(phoneOutputPortMaria);
+            phoneInputPort  = new PhoneUseCase(phoneOutputPortMaria);
             personInputPort = new PersonUseCase(personOutputPortMaria);
             return DatabaseOption.MARIA.toString();
         } else if (dbOption.equalsIgnoreCase(DatabaseOption.MONGO.toString())) {
-            phoneInputPort = new PhoneUseCase(phoneOutputPortMongo);
+            phoneInputPort  = new PhoneUseCase(phoneOutputPortMongo);
             personInputPort = new PersonUseCase(personOutputPortMongo);
             return DatabaseOption.MONGO.toString();
         } else {
@@ -63,13 +64,18 @@ public class TelefonoInputAdapterRest {
         }
     }
 
-    public List<TelefonoResponse> historial(String database) throws InvalidOptionException, NoExistException {
+    public List<TelefonoResponse> historial(String database)
+            throws InvalidOptionException, NoExistException {
+
         log.info("Into historial TelefonoEntity in Input Adapter");
-        setPhoneOutputPortInjection(database);
+        String db = setPhoneOutputPortInjection(database);
+
         List<TelefonoResponse> phones = phoneInputPort.findAll()
-            .stream()
-            .map(telefonoMapperRest::fromDomainToAdapterRestMaria)
-            .collect(Collectors.toList());
+                .stream()
+                .map(p -> db.equalsIgnoreCase(DatabaseOption.MARIA.toString())
+                        ? telefonoMapperRest.fromDomainToAdapterRestMaria(p)
+                        : telefonoMapperRest.fromDomainToAdapterRestMongo(p))
+                .collect(Collectors.toList());
 
         if (phones.isEmpty()) {
             throw new NoExistException("No phones found in database: " + database);
@@ -77,30 +83,46 @@ public class TelefonoInputAdapterRest {
         return phones;
     }
 
-    public TelefonoResponse createPhone(TelefonoRequest request) throws InvalidOptionException, NoExistException {
+    public TelefonoResponse createPhone(TelefonoRequest request)
+            throws InvalidOptionException, NoExistException {
+
         log.info("Into createPhone in Input Adapter");
-        setPhoneOutputPortInjection(request.getDatabase());
+        String db = setPhoneOutputPortInjection(request.getDatabase());
+
         Person owner = personInputPort.findOne(Integer.parseInt(request.getOwner()));
         if (owner == null) {
             throw new NoExistException("Owner not found with ID: " + request.getOwner());
         }
-        Phone phone = phoneInputPort.create(telefonoMapperRest.fromAdapterToDomain(request, owner));
-        return telefonoMapperRest.fromDomainToAdapterRestMaria(phone);
+        Phone phone = phoneInputPort.create(
+                telefonoMapperRest.fromAdapterToDomain(request, owner));
+
+        return db.equalsIgnoreCase(DatabaseOption.MARIA.toString())
+                ? telefonoMapperRest.fromDomainToAdapterRestMaria(phone)
+                : telefonoMapperRest.fromDomainToAdapterRestMongo(phone);
     }
 
-    public TelefonoResponse findOne(String database, String number) throws InvalidOptionException, NoExistException {
+    public TelefonoResponse findOne(String database, String number)
+            throws InvalidOptionException, NoExistException {
+
         log.info("Into findOne TelefonoEntity in Input Adapter");
-        setPhoneOutputPortInjection(database);
+        String db = setPhoneOutputPortInjection(database);
+
         Phone phone = phoneInputPort.findOne(number);
         if (phone == null) {
             throw new NoExistException("Phone not found with number: " + number);
         }
-        return telefonoMapperRest.fromDomainToAdapterRestMaria(phone);
+
+        return db.equalsIgnoreCase(DatabaseOption.MARIA.toString())
+                ? telefonoMapperRest.fromDomainToAdapterRestMaria(phone)
+                : telefonoMapperRest.fromDomainToAdapterRestMongo(phone);
     }
 
-    public TelefonoResponse deletePhone(String database, String number) throws InvalidOptionException, NoExistException {
+    public TelefonoResponse deletePhone(String database, String number)
+            throws InvalidOptionException, NoExistException {
+
         log.info("Into deletePhone in Input Adapter");
         setPhoneOutputPortInjection(database);
+
         boolean deleted = phoneInputPort.drop(number);
         if (!deleted) {
             throw new NoExistException("Phone not found with number: " + number);
@@ -108,17 +130,26 @@ public class TelefonoInputAdapterRest {
         return new TelefonoResponse("Phone deleted", "", "", database, "DELETED");
     }
 
-    public TelefonoResponse editPhone(TelefonoRequest request) throws InvalidOptionException, NoExistException {
+    public TelefonoResponse editPhone(TelefonoRequest request)
+            throws InvalidOptionException, NoExistException {
+
         log.info("Into editPhone in Input Adapter");
-        setPhoneOutputPortInjection(request.getDatabase());
+        String db = setPhoneOutputPortInjection(request.getDatabase());
+
         Person owner = personInputPort.findOne(Integer.parseInt(request.getOwner()));
         if (owner == null) {
             throw new NoExistException("Owner not found with ID: " + request.getOwner());
         }
-        Phone updatedPhone = phoneInputPort.edit(request.getNumber(), telefonoMapperRest.fromAdapterToDomain(request, owner));
-        if (updatedPhone == null) {
+        Phone updated = phoneInputPort.edit(
+                request.getNumber(),
+                telefonoMapperRest.fromAdapterToDomain(request, owner));
+
+        if (updated == null) {
             throw new NoExistException("Phone not found with number: " + request.getNumber());
         }
-        return telefonoMapperRest.fromDomainToAdapterRestMaria(updatedPhone);
+
+        return db.equalsIgnoreCase(DatabaseOption.MARIA.toString())
+                ? telefonoMapperRest.fromDomainToAdapterRestMaria(updated)
+                : telefonoMapperRest.fromDomainToAdapterRestMongo(updated);
     }
 }

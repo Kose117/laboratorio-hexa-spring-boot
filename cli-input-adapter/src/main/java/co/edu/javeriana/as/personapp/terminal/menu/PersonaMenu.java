@@ -12,36 +12,39 @@ import lombok.extern.slf4j.Slf4j;
 public class PersonaMenu {
 
     private static String DATABASE = "MARIA";
+
     private static final int OPCION_REGRESAR_MODULOS = 0;
-    private static final int PERSISTENCIA_MARIADB = 1;
-    private static final int PERSISTENCIA_MONGODB = 2;
+    private static final int PERSISTENCIA_MARIADB    = 1;
+    private static final int PERSISTENCIA_MONGODB    = 2;
 
     private static final int OPCION_REGRESAR_MOTOR_PERSISTENCIA = 0;
-    private static final int OPCION_VER_TODO = 1;
-    private static final int OPCION_CREAR = 2;
+    private static final int OPCION_VER_TODO   = 1;
+    private static final int OPCION_CREAR      = 2;
     private static final int OPCION_ACTUALIZAR = 3;
-    private static final int OPCION_BUSCAR = 4;
-    private static final int OPCION_ELIMINAR = 5;
+    private static final int OPCION_BUSCAR     = 4;
+    private static final int OPCION_ELIMINAR   = 5;
 
-    public void iniciarMenu(PersonaInputAdapterCli personaInputAdapterCli, Scanner keyboard) {
-        boolean isValid = false;
+    /* ═══════════════════════════  FLUJO PRINCIPAL  ═══════════════════════════ */
+
+    public void iniciarMenu(PersonaInputAdapterCli cli, Scanner kb) {
+        boolean salir = false;
         do {
             try {
                 mostrarMenuMotorPersistencia();
-                int opcion = leerOpcion(keyboard);
+                int opcion = leerOpcion(kb);
                 switch (opcion) {
                     case OPCION_REGRESAR_MODULOS:
-                        isValid = true;
+                        salir = true;
                         break;
                     case PERSISTENCIA_MARIADB:
                         DATABASE = "MARIA";
-                        personaInputAdapterCli.setPersonOutputPortInjection(DATABASE);
-                        menuOpciones(personaInputAdapterCli, keyboard);
+                        cli.setPersonOutputPortInjection(DATABASE);
+                        menuOpciones(cli, kb);
                         break;
                     case PERSISTENCIA_MONGODB:
                         DATABASE = "MONGO";
-                        personaInputAdapterCli.setPersonOutputPortInjection(DATABASE);
-                        menuOpciones(personaInputAdapterCli, keyboard);
+                        cli.setPersonOutputPortInjection(DATABASE);
+                        menuOpciones(cli, kb);
                         break;
                     default:
                         log.warn("La opción elegida no es válida.");
@@ -49,38 +52,33 @@ public class PersonaMenu {
             } catch (InvalidOptionException e) {
                 log.warn(e.getMessage());
             }
-        } while (!isValid);
+        } while (!salir);
     }
 
-    private void menuOpciones(PersonaInputAdapterCli personaInputAdapterCli, Scanner keyboard) {
-        boolean isValid = false;
+    private void menuOpciones(PersonaInputAdapterCli cli, Scanner kb) {
+        boolean salir = false;
         do {
             try {
                 mostrarMenuOpciones();
-                int opcion = leerOpcion(keyboard);
+                int opcion = leerOpcion(kb);
                 switch (opcion) {
                     case OPCION_REGRESAR_MOTOR_PERSISTENCIA:
-                        isValid = true;
+                        salir = true;
                         break;
                     case OPCION_VER_TODO:
-                        log.info("Visualizando todas las personas.");
-                        personaInputAdapterCli.historial();
+                        cli.historial();
                         break;
                     case OPCION_CREAR:
-                        log.info("Creando una nueva persona.");
-                        personaInputAdapterCli.crearPersona(leerEntidad(keyboard), DATABASE);
+                        cli.crearPersona(leerEntidad(kb), DATABASE);
                         break;
                     case OPCION_ACTUALIZAR:
-                        log.info("Actualizando una persona existente.");
-                        personaInputAdapterCli.editarPersona(leerEntidad(keyboard), DATABASE);
+                        cli.editarPersona(leerEntidad(kb), DATABASE);
                         break;
                     case OPCION_BUSCAR:
-                        log.info("Buscando una persona.");
-                        personaInputAdapterCli.buscarPersona(DATABASE, leerIdentificacion(keyboard));
+                        cli.buscarPersona(DATABASE, leerIdentificacion(kb));
                         break;
                     case OPCION_ELIMINAR:
-                        log.info("Eliminando una persona.");
-                        personaInputAdapterCli.eliminarPersona(DATABASE, leerIdentificacion(keyboard));
+                        cli.eliminarPersona(DATABASE, leerIdentificacion(kb));
                         break;
                     default:
                         log.warn("La opción elegida no es válida.");
@@ -88,72 +86,79 @@ public class PersonaMenu {
             } catch (InputMismatchException e) {
                 log.warn("Solo se permiten números.");
             }
-        } while (!isValid);
+        } while (!salir);
     }
 
+    /* ═══════════════════════════  MENÚ EN ASCII BOX  ═════════════════════════ */
+
     private void mostrarMenuOpciones() {
-        System.out.println("----------------------");
-        System.out.println("MENÚ DE PERSONAS");
-        System.out.println(OPCION_VER_TODO + " - Get All Personas");
-        System.out.println(OPCION_CREAR + " - Create Persona");
-        System.out.println(OPCION_ACTUALIZAR + " - Update Persona");
-        System.out.println(OPCION_BUSCAR + " - Find Persona");
-        System.out.println(OPCION_ELIMINAR + " - Delete Persona");
-        System.out.println(OPCION_REGRESAR_MOTOR_PERSISTENCIA + " - Regresar");
-        System.out.println("----------------------");
+        System.out.println("+----------------------------------------------------+");
+        System.out.println("|            M E N Ú   D E   P E R S O N A S         |");
+        System.out.println("+----------------------------------------------------+");
+        System.out.println("| 1 |  Ver todas las personas                        |");
+        System.out.println("| 2 |  Crear persona                                 |");
+        System.out.println("| 3 |  Actualizar persona                            |");
+        System.out.println("| 4 |  Buscar persona                                |");
+        System.out.println("| 5 |  Eliminar persona                              |");
+        System.out.println("| 0 |  Regresar                                      |");
+        System.out.println("+----------------------------------------------------+");
+        System.out.print ("Seleccione opción ▶ ");
     }
 
     private void mostrarMenuMotorPersistencia() {
-        System.out.println("----------------------");
-        System.out.println("SELECCIONAR MOTOR DE PERSISTENCIA");
-        System.out.println(PERSISTENCIA_MARIADB + " - MariaDB");
-        System.out.println(PERSISTENCIA_MONGODB + " - MongoDB");
-        System.out.println(OPCION_REGRESAR_MODULOS + " - Regresar");
-        System.out.println("----------------------");
+        System.out.println("+--------------------------------+");
+        System.out.println("|       M O T O R   D E   B D    |");
+        System.out.println("+--------------------------------+");
+        System.out.println("| 1 |  MariaDB                   |");
+        System.out.println("| 2 |  MongoDB                   |");
+        System.out.println("| 0 |  Regresar                  |");
+        System.out.println("+--------------------------------+");
+        System.out.print ("Seleccione opción ▶ ");
     }
 
-    private int leerOpcion(Scanner keyboard) {
+    /* ═══════════════════════════  UTILIDADES DE LECTURA  ═════════════════════ */
+
+    private int leerOpcion(Scanner kb) {
         try {
-            System.out.print("Ingrese una opción: ");
-            return keyboard.nextInt();
+            return kb.nextInt();
         } catch (InputMismatchException e) {
-            log.warn("Solo se permiten números.");
-            keyboard.nextLine(); // Limpiar el buffer
-            return leerOpcion(keyboard);
+            kb.nextLine();
+            System.out.println("Por favor ingrese un número válido.");
+            return leerOpcion(kb);
         }
     }
 
-    private int leerIdentificacion(Scanner keyboard) {
+    private int leerIdentificacion(Scanner kb) {
         try {
-            System.out.print("Ingrese la identificación: ");
-            return keyboard.nextInt();
+            System.out.print("ID persona ▶ ");
+            return kb.nextInt();
         } catch (InputMismatchException e) {
-            log.warn("Solo se permiten números.");
-            keyboard.nextLine(); // Limpiar el buffer
-            return leerIdentificacion(keyboard);
+            kb.nextLine();
+            System.out.println("ID inválido, intente de nuevo.");
+            return leerIdentificacion(kb);
         }
     }
 
-    public PersonaModelCli leerEntidad(Scanner keyboard) {
+    public PersonaModelCli leerEntidad(Scanner kb) {
         try {
-            PersonaModelCli personaModelCli = new PersonaModelCli();
-            System.out.print("Ingrese la identificación: ");
-            personaModelCli.setCc(keyboard.nextInt());
-            keyboard.nextLine();
-            System.out.print("Ingrese el nombre: ");
-            personaModelCli.setNombre(keyboard.nextLine());
-            System.out.print("Ingrese el apellido: ");
-            personaModelCli.setApellido(keyboard.nextLine());
-            System.out.println("Ingrese el género (M/F): ");
-            personaModelCli.setGenero(keyboard.nextLine());
-            System.out.println("Ingrese la edad: ");
-            personaModelCli.setEdad(keyboard.nextInt());
-            keyboard.nextLine();
-            return personaModelCli;
+            PersonaModelCli p = new PersonaModelCli();
+            System.out.print("ID persona ▶ ");
+            p.setCc(kb.nextInt());
+            kb.nextLine();
+            System.out.print("Nombre      ▶ ");
+            p.setNombre(kb.nextLine());
+            System.out.print("Apellido    ▶ ");
+            p.setApellido(kb.nextLine());
+            System.out.print("Género (M/F)▶ ");
+            p.setGenero(kb.nextLine());
+            System.out.print("Edad        ▶ ");
+            p.setEdad(kb.nextInt());
+            kb.nextLine();
+            return p;
         } catch (InputMismatchException e) {
-            System.out.println("Datos incorrectos, ingrese los datos nuevamente.");
-            keyboard.nextLine(); // Limpiar el buffer
-            return leerEntidad(keyboard);
+            System.out.println("Datos inválidos, intente nuevamente.");
+            kb.nextLine();
+            return leerEntidad(kb);
         }
     }
 }

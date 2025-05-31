@@ -15,13 +15,14 @@ services:
     image: mongo:latest
     container_name: mongodb-container
     environment:
-      MONGO_INITDB_ROOT_USERNAME: persona_db
-      MONGO_INITDB_ROOT_PASSWORD: persona_db
-      MONGO_INITDB_DATABASE: persona_db
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
-      - ./scripts:/docker-entrypoint-initdb.d
+      - mongo-data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
+      
     networks:
       - my_network
 
