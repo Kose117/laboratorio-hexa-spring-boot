@@ -15,12 +15,8 @@ Deben configurar el lombok en sus IDEs
 
 Pueden hacer Fork a este repo, no editar este repositorio
 
-# REVISADO
-Aplication
-cli input
-Common
-Domain
-maria output
+# Correr swagger
+docker compose up -d --build  
 
-
-mongo output adapter
+# Correr cli
+java -jar cli-input-adapter/target/cli-input-adapter-0.0.1-SNAPSHOT.jar
