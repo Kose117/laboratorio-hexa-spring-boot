@@ -73,7 +73,7 @@ public class MenuPrincipal {
 
     private void mostrarMenu() {
         System.out.println("+----------------------------------------------------+");
-        System.out.println("|              M E N Ú   P R I N C I P A L           |");
+        System.out.println("|              M E N U   P R I N C I P A L           |");
         System.out.println("+----------------------------------------------------+");
         System.out.println("| 1 |  Personas                                      |");
         System.out.println("| 2 |  Profesiones                                   |");

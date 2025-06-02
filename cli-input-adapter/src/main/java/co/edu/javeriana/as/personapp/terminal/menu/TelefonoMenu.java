@@ -93,7 +93,7 @@ public class TelefonoMenu {
 
     private void mostrarMenuOpciones() {
         System.out.println("+----------------------------------------------------+");
-        System.out.println("|        M E N Ú   D E   T E L É F O N O S          |");
+        System.out.println("|        M E N U   D E   T E L É F O N O S          |");
         System.out.println("+----------------------------------------------------+");
         System.out.println("| 1 |  Ver todos los teléfonos                       |");
         System.out.println("| 2 |  Crear teléfono                                |");

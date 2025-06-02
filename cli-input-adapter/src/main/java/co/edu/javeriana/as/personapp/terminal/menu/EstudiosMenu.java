@@ -93,7 +93,7 @@ public class EstudiosMenu {
 
     private void mostrarMenuOpciones() {
         System.out.println("+----------------------------------------------------+");
-        System.out.println("|            M E N Ú   D E   E S T U D I O S         |");
+        System.out.println("|            M E N U   D E   E S T U D I O S         |");
         System.out.println("+----------------------------------------------------+");
         System.out.println("| 1 |  Ver todos los estudios                        |");
         System.out.println("| 2 |  Crear estudio                                 |");

@@ -69,7 +69,10 @@ public class ProfesionInputAdapterCli {
         try {
             setProfessionOutputPortInjection(dbOption);
             professionInputPort.create(profesionMapperCli.fromAdapterCliToDomain(profesionModelCli));
-            System.out.println("Profesion creada con éxito: " + profesionModelCli.toString());
+
+            // Mapear de vuelta a modelo CLI y mostrar la tabla con la profesión creada
+            // (en este caso ya tenemos la instancia de modelo 'profesionModelCli')
+            imprimirTabla(List.of(profesionModelCli));
         } catch (Exception e) {
             log.warn(e.getMessage());
             System.out.println("Error al crear profesión");
@@ -80,21 +83,36 @@ public class ProfesionInputAdapterCli {
         log.info("Into editarProfesion ProfessionEntity in Input Adapter");
         try {
             setProfessionOutputPortInjection(dbOption);
-            Profession profession = professionInputPort.edit(profesionModelCli.getId(), profesionMapperCli.fromAdapterCliToDomain(profesionModelCli));
-            System.out.println("Profesion editada con éxito: " + profession.toString());
+
+            // Ejecutar la edición y obtener el objeto domain actualizado
+            Profession updatedDomain = professionInputPort.edit(
+                    profesionModelCli.getId(),
+                    profesionMapperCli.fromAdapterCliToDomain(profesionModelCli));
+
+            // Mapear el objeto domain recién editado de vuelta a modelo CLI
+            ProfesionModelCli updatedModel = profesionMapperCli.fromDomainToAdapterCli(updatedDomain);
+
+            // Mostrar la tabla con la profesión editada
+            imprimirTabla(List.of(updatedModel));
         } catch (Exception e) {
             log.warn(e.getMessage());
-            System.out.println("Error al editar: " + profesionModelCli.toString());
+            System.out.println("Error al editar profesión: " + profesionModelCli.toString());
         }
     }
 
-    public void eliminarProfesion(String dbOption, int cc) {
+    public void eliminarProfesion(String dbOption, int id) {
         log.info("Into eliminarProfesion ProfessionEntity in Input Adapter");
         try {
             setProfessionOutputPortInjection(dbOption);
-            boolean resultado = professionInputPort.drop(cc);
+            boolean resultado = professionInputPort.drop(id);
             if (resultado) {
-                System.out.println("Profesion eliminada con éxito: " + cc);
+                // Si se elimina correctamente, imprimimos una fila con solo el ID eliminado
+                System.out.println("Profesion eliminada con éxito:");
+                System.out.println("---------------------------------------------------------------------------");
+                System.out.printf("%-10s%n", "ID");
+                System.out.println("---------------------------------------------------------------------------");
+                System.out.printf("%-10d%n", id);
+                System.out.println("---------------------------------------------------------------------------");
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
@@ -102,16 +120,22 @@ public class ProfesionInputAdapterCli {
         }
     }
 
-    public void buscarProfesion(String dbOption, int cc) {
+    public void buscarProfesion(String dbOption, int id) {
         log.info("Into buscarProfesion ProfessionEntity in Input Adapter");
         try {
             setProfessionOutputPortInjection(dbOption);
-            Profession profession = professionInputPort.findOne(cc);
-            ProfesionModelCli profesionModelCli = profesionMapperCli.fromDomainToAdapterCli(profession);
-            System.out.println("Profesion encontrada: " + profesionModelCli.toString());
+            Profession profession = professionInputPort.findOne(id);
+            if (profession != null) {
+                // Mapear al modelo CLI y mostrar la tabla con la profesión encontrada
+                ProfesionModelCli foundModel = profesionMapperCli.fromDomainToAdapterCli(profession);
+                imprimirTabla(List.of(foundModel));
+            } else {
+                System.out.println("Profesión no encontrada con ID: " + id);
+            }
         } catch (Exception e) {
             log.warn(e.getMessage());
             System.out.println("Error al buscar profesión");
         }
     }
+
 }

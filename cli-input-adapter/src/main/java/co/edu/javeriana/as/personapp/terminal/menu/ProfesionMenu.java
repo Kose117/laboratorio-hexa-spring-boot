@@ -93,7 +93,7 @@ public class ProfesionMenu {
 
     private void mostrarMenuOpciones() {
         System.out.println("+----------------------------------------------------+");
-        System.out.println("|        M E N Ú   D E   P R O F E S I O N E S       |");
+        System.out.println("|        M E N U   D E   P R O F E S I O N E S       |");
         System.out.println("+----------------------------------------------------+");
         System.out.println("| 1 |  Ver todas las profesiones                     |");
         System.out.println("| 2 |  Crear profesión                               |");

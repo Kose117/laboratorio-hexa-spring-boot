@@ -93,7 +93,7 @@ public class PersonaMenu {
 
     private void mostrarMenuOpciones() {
         System.out.println("+----------------------------------------------------+");
-        System.out.println("|            M E N Ú   D E   P E R S O N A S         |");
+        System.out.println("|            M E N U   D E   P E R S O N A S         |");
         System.out.println("+----------------------------------------------------+");
         System.out.println("| 1 |  Ver todas las personas                        |");
         System.out.println("| 2 |  Crear persona                                 |");

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Adapter
 public class EstudiosInputAdapterCli {
 
-    //MariaDB
+    // MariaDB
     @Autowired
     @Qualifier("studyOutputAdapterMaria")
     private StudyOutputPort studyOutputPortMaria;
@@ -42,7 +42,7 @@ public class EstudiosInputAdapterCli {
     @Qualifier("professionOutputAdapterMaria")
     private ProfessionOutputPort professionOutputPortMaria;
 
-    //MongoDB
+    // MongoDB
     @Autowired
     @Qualifier("studyOutputAdapterMongo")
     private StudyOutputPort studyOutputPortMongo;
@@ -58,7 +58,7 @@ public class EstudiosInputAdapterCli {
     @Autowired
     private EstudiosMapperCli estudiosMapperCli;
 
-    //Puertos de entrada a la aplicación
+    // Puertos de entrada a la aplicación
     StudyInputPort studyInputPort;
     ProfessionInputPort professionInputPort;
     PersonInputPort personInputPort;
@@ -80,8 +80,8 @@ public class EstudiosInputAdapterCli {
     public void historial() {
         log.info("Into historial StudyEntity in Input Adapter");
         List<EstudiosModelCli> estudios = studyInputPort.findAll().stream()
-            .map(estudiosMapperCli::fromDomainToAdapterCli)
-            .collect(Collectors.toList());
+                .map(estudiosMapperCli::fromDomainToAdapterCli)
+                .collect(Collectors.toList());
         imprimirTabla(estudios);
     }
 
@@ -119,14 +119,18 @@ public class EstudiosInputAdapterCli {
 
     private void imprimirTabla(List<EstudiosModelCli> estudios) {
         System.out.println("---------------------------------------------------------------------------");
-        System.out.printf("%-15s %-20s %-20s %-30s %-20s%n", "ID Persona", "ID Profesion", "Universidad", "Fecha de Graduación");
+        // 4 columnas → 4 especificadores
+        System.out.printf("%-15s %-15s %-25s %-20s%n",
+                "ID Persona", "ID Profesión", "Universidad", "Fecha de Graduación");
         System.out.println("---------------------------------------------------------------------------");
+
         for (EstudiosModelCli estudio : estudios) {
-            System.out.printf("%-15s %-20s %-20s %-30s %-20s%n",
+            // 4 argumentos que coinciden con los 4 especificadores
+            System.out.printf("%-15s %-15s %-25s %-20s%n",
                     estudio.getIdPerson(),
                     estudio.getIdProfession(),
                     estudio.getUniversityName(),
-                    estudio.getGraduationDate());
+                    estudio.getGraduationDate()); // .toString() innecesario: printf llama a toString()
         }
         System.out.println("---------------------------------------------------------------------------");
     }
@@ -139,7 +143,8 @@ public class EstudiosInputAdapterCli {
             Integer idProfession = Integer.parseInt(estudios.getIdProfession());
             Person person = personInputPort.findOne(idPerson);
             Profession profession = professionInputPort.findOne(idProfession);
-            studyInputPort.edit(idProfession, idPerson, estudiosMapperCli.fromAdapterCliToDomain(estudios, profession, person));
+            studyInputPort.edit(idProfession, idPerson,
+                    estudiosMapperCli.fromAdapterCliToDomain(estudios, profession, person));
             System.out.println("Estudio editado correctamente " + estudios.toString());
             imprimirTabla(List.of(estudios)); // Imprimir la tabla con el estudio editado
         } catch (Exception e) {
