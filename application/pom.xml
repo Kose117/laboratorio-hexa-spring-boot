@@ -1,26 +1,84 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>co.edu.javeriana.as</groupId>
-		<artifactId>personapp-hexa-spring-boot</artifactId>
-		<version>${revision}</version>
-	</parent>
-	<groupId>co.edu.javeriana.as.personapp</groupId>
-	<artifactId>application</artifactId>
-	<name>PersonAPP Application</name>
-	<description>Application (Business Rules) for PersonAPP</description>
-	<dependencies>
-		<dependency>
-			<groupId>co.edu.javeriana.as.personapp</groupId>
-			<artifactId>domain</artifactId>
-			<version>${revision}</version>
-		</dependency>
-		<dependency>
-			<groupId>co.edu.javeriana.as.personapp</groupId>
-			<artifactId>common</artifactId>
-			<version>${revision}</version>
-		</dependency>
-	</dependencies>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Hereda del POM padre -->
+  <parent>
+    <groupId>co.edu.javeriana.as</groupId>
+    <artifactId>personapp-hexa-spring-boot</artifactId>
+    <version>${revision}</version>
+  </parent>
+
+  <groupId>co.edu.javeriana.as.personapp</groupId>
+  <artifactId>application</artifactId>
+  <name>PersonAPP Application</name>
+  <description>Application (Business Rules) for PersonAPP</description>
+
+  <properties>
+    <!-- Asegúrate de usar la misma variable de Java que en el padre -->
+    <java.version>11</java.version>
+    <spring.boot.version>2.7.11</spring.boot.version>
+  </properties>
+
+  <dependencies>
+    <!-- Dependencias internas del proyecto -->
+    <dependency>
+      <groupId>co.edu.javeriana.as.personapp</groupId>
+      <artifactId>domain</artifactId>
+      <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>co.edu.javeriana.as.personapp</groupId>
+      <artifactId>common</artifactId>
+      <version>${revision}</version>
+    </dependency>
+
+    <!-- 1) Lombok como dependencia “provided” -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- 2) Si usas SLF4J / Spring Boot Starter, agrégalo aquí -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+      <version>${spring.boot.version}</version>
+    </dependency>
+
+    <!-- Otras dependencias propias de application… -->
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- A) Plugin de compilación: habilita el annotation processing para Lombok -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.30</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+      <!-- B) Plugin de Spring Boot (opcional, si esta aplica) -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
+      </plugin>
+    </plugins>
+  </build>
 </project>
