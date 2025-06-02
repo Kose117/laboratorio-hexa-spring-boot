@@ -1,4 +1,4 @@
-```markdown
+
 # personapp-hexa-spring-boot
 **Plantilla de Laboratorio: Arquitectura Limpia + Spring Boot + CLI/REST**
 
